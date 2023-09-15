@@ -1,6 +1,34 @@
 #include "main.h"
+#include "Display.hpp"
+#include "systems/DriveTrain.hpp"
+#include "autonomous/Odometry.hpp"
 
 using namespace pros;
+using namespace Display;
+
+Controller master(E_CONTROLLER_MASTER);
+
+DriveTrain dt = DriveTrain();
+
+LV_IMG_DECLARE(annete);
+lv_obj_t* bgImg = lv_img_disp(&annete);
+
+lv_obj_t* odometryInfo = createLabel(lv_scr_act(), Display::DISP_CENTER, 150, 40, "Odom Info");
+Odometry odom = Odometry(&dt, &odometryInfo);
+
+bool arcade;
+inline lv_res_t toggleMode(lv_obj_t* btn)
+{
+    if (arcade) {
+		dt.teleMove = [=]{dt.tankDrive(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));};
+		} else {
+		dt.teleMove = [=]{dt.arcadeDrive(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y),master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X));};
+    }
+	arcade = !arcade;
+
+	btnSetToggled(btn, arcade);
+    return LV_RES_OK;
+}
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -9,7 +37,10 @@ using namespace pros;
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	lv_obj_t* driveBtn = createBtn(lv_scr_act(), Display::DISP_CENTER, 150, 20, "Switch drive types", LV_COLOR_MAKE(62, 180, 137), LV_COLOR_MAKE(153, 50, 204));
+	lv_btn_set_action(driveBtn, LV_BTN_ACTION_CLICK, toggleMode);
 }
+
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -56,9 +87,8 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	Controller master(pros::E_CONTROLLER_MASTER);
-
 	while (true) {
-		pros::delay(20);
+		dt.teleMove();
+		delay(20);
 	}
 }
