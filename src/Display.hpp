@@ -22,7 +22,7 @@ namespace Display {
                     lv_color_t bgCol = LV_COLOR_BLACK, lv_opa_t opa = LV_OPA_0, lv_color_t textColor = LV_COLOR_WHITE, lv_style_t* copy = &lv_style_plain)
     {
         lv_obj_t* label =  lv_label_create(parent, NULL);
-        lv_obj_set_pos(label, lv_obj_get_x(lv_obj_get_child(parent, NULL)) + 40, (align+1)*100);
+        lv_obj_set_pos(label, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 40);
         lv_obj_set_size(label, width, height);
         lv_label_set_text(label,title);
         lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
@@ -43,7 +43,7 @@ namespace Display {
                     lv_color_t rel, lv_color_t tglRel, lv_style_t* copy = &lv_style_plain, lv_color_t textColor = LV_COLOR_WHITE)
     {
         lv_obj_t* btn = lv_btn_create(parent, NULL);
-        lv_obj_set_pos(btn, lv_obj_get_x(lv_obj_get_child(parent, NULL)) + 40, (align+1)*100);
+        lv_obj_set_pos(btn, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 40);
         lv_obj_set_size(btn, width, height);
 
         lv_obj_t* label = lv_label_create(btn, NULL);
