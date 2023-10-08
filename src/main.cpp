@@ -1,9 +1,7 @@
 #include "main.h"
 #include "Display.hpp"
-#include "display/lv_core/lv_obj.h"
-#include "pros/misc.h"
-#include "pros/rtos.h"
 #include "systems/DriveTrain.hpp"
+#include "systems/Catapult.hpp"
 #include "systems/Flaps.hpp"
 #include "autonomous/Odometry.hpp"
 
@@ -13,14 +11,11 @@ using namespace Display;
 Controller master(E_CONTROLLER_MASTER);
 
 DriveTrain dt = DriveTrain();
-//Flaps fp = Flaps();
+Catapult cata = Catapult();
+Flaps fp = Flaps();
 
 LV_IMG_DECLARE(normal);
 lv_obj_t* bgImg = lv_img_disp(&normal);
-
-/*lv_obj_t* odometryInfo = createLabel(lv_scr_act(), Display::DISP_CENTER, 300, 40, "Odom Info");
-Odometry odom = Odometry(&dt, &odometryInfo);
-*/
 
 char lY = 0;
 char rY = 0;
@@ -29,10 +24,13 @@ char rX = 0;
 bool arcade;
 inline lv_res_t toggleMode(lv_obj_t* btn)
 {
+	
     if (arcade) {
 		dt.teleMove = [=]{dt.tankDrive(lY,rY);};
+		lv_label_set_text(lv_obj_get_child(btn, NULL), "Tank Drive");
 		} else {
 		dt.teleMove = [=]{dt.arcadeDrive(lY,rX);};
+		lv_label_set_text(lv_obj_get_child(btn, NULL), "Arcade Drive");
     }
 	arcade = !arcade;
 
@@ -47,13 +45,16 @@ inline lv_res_t toggleMode(lv_obj_t* btn)
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	lv_obj_t* odometryInfo = createLabel(lv_scr_act(), Display::DISP_CENTER, 300, 40, "Odom Info");
+	Odometry odom = Odometry(&dt, &odometryInfo);
+
 	dt.teleMove = [=]{dt.tankDrive(lY,rY);};
-	lv_obj_t* driveBtn = createBtn(lv_scr_act(), Display::DISP_CENTER, 300, 20, "Switch drive types", LV_COLOR_MAKE(62, 180, 137), LV_COLOR_MAKE(153, 50, 204));
+	lv_obj_t* driveBtn = createBtn(lv_scr_act(), Display::DISP_CENTER, 300, 20, "Tank Drive", LV_COLOR_MAKE(62, 180, 137), LV_COLOR_MAKE(153, 50, 204));
 	lv_btn_set_action(driveBtn, LV_BTN_ACTION_CLICK, toggleMode);
 
-	//lv_obj_t* pickleT = createLabel(lv_scr_act(), DISP_CENTER, 300, 100, "Current pickle high scores (5 min)\nEsteban: 11\nJayleen: 10\nJI: 9");
+	lv_obj_t* pickleT = createLabel(lv_scr_act(), DISP_CENTER, 300, 100,
+		"Current pickle high scores (5 min)\nEsteban: 11\nJayleen: 10\nJI: 9");
 }
-
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -104,15 +105,25 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	bool precisionM = false;
-	int precisionTime = 0;
+	bool prcsM = false;
+	int prcsET, fpET = 0;
 	while (true) {
-		lY = (!precisionM) ? master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)/2;
-		rY = (!precisionM) ? master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) : master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)/2;
-		rX = (!precisionM) ? master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) : master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)/2;
+		// Set precision mode (dont repeat until half a second)
+		if (master.get_digital(E_CONTROLLER_DIGITAL_R1) && (millis() - prcsET > 500)) {prcsM = !prcsM; prcsET = millis();}
+
+		// Toggle flaps (dont repeat until half a second)
+		if (master.get_digital(E_CONTROLLER_DIGITAL_A) && (millis() - fpET > 500)) {fp.toggle(); fpET = millis();}
+
+		{ // Set input for the drivetrain's teleMove according to precision mode.
+			lY = (prcsM) ? master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)/2 : master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+			rY = (prcsM) ? master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)/2 : master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+			rX = (prcsM) ? master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)/2 : master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		}
+
 		dt.teleMove();
 
-		if (master.get_digital(E_CONTROLLER_DIGITAL_R1) && (millis() - precisionTime > 500)) {precisionM = !precisionM; precisionTime = millis();}
+		// Automatically move the catapult down unless it's hitting the button, or continue moving down if B is pressed
+		cata.move(-127, !master.get_digital(E_CONTROLLER_DIGITAL_B));
 
 		delay(20);
 	}

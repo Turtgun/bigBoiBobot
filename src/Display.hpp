@@ -18,23 +18,13 @@ namespace Display {
         return img;
     }
 
-    static inline lv_obj_t* createLabel(lv_obj_t* parent, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title,
-                    lv_color_t bgCol = LV_COLOR_BLACK, lv_opa_t opa = LV_OPA_0, lv_color_t textColor = LV_COLOR_WHITE, lv_style_t* copy = &lv_style_plain)
+    static inline lv_obj_t* createLabel(lv_obj_t* parent, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title)
     {
         lv_obj_t* label =  lv_label_create(parent, NULL);
         lv_obj_set_pos(label, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 40);
         lv_obj_set_size(label, width, height);
-        lv_label_set_text(label,title);
+        lv_label_set_text(label, title);
         lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
-
-        lv_style_t* labelSty;
-        lv_style_copy(&labelSty[0], copy);
-
-        labelSty[0].body.main_color = bgCol;
-        labelSty[0].body.opa = opa;
-        labelSty[0].text.color = textColor;
-
-        lv_label_set_style(label, labelSty);
 
         return label;
     }
