@@ -1,5 +1,6 @@
 #include "main.h"
 #include "Display.hpp"
+#include "pros/misc.h"
 #include "systems/DriveTrain.hpp"
 #include "systems/Catapult.hpp"
 #include "systems/Flaps.hpp"
@@ -17,9 +18,7 @@ Flaps fp = Flaps();
 LV_IMG_DECLARE(normal);
 lv_obj_t* bgImg = lv_img_disp(&normal);
 
-char lY = 0;
-char rY = 0;
-char rX = 0;
+char lY,rY,rX = 0;
 
 bool arcade;
 inline lv_res_t toggleMode(lv_obj_t* btn)
@@ -45,8 +44,8 @@ inline lv_res_t toggleMode(lv_obj_t* btn)
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	lv_obj_t* odometryInfo = createLabel(lv_scr_act(), Display::DISP_CENTER, 300, 40, "Odom Info");
-	Odometry odom = Odometry(&dt, &odometryInfo);
+	/*lv_obj_t* odometryInfo = createLabel(lv_scr_act(), Display::DISP_CENTER, 300, 40, "Odom Info");
+	Odometry odom = Odometry(&dt, &odometryInfo);*/
 
 	dt.teleMove = [=]{dt.tankDrive(lY,rY);};
 	lv_obj_t* driveBtn = createBtn(lv_scr_act(), Display::DISP_CENTER, 300, 20, "Tank Drive", LV_COLOR_MAKE(62, 180, 137), LV_COLOR_MAKE(153, 50, 204));
@@ -89,6 +88,9 @@ void autonomous() {
 	dt.arcadeDrive(127, 0);
 	delay(2000);
 	dt.arcadeDrive(0, 0);
+	dt.arcadeDrive(-127, 0);
+	delay(500);
+	dt.arcadeDrive(0, 0);
 }
 
 /**
@@ -109,7 +111,7 @@ void opcontrol() {
 	int prcsET, fpET = 0;
 	while (true) {
 		// Set precision mode (dont repeat until half a second)
-		if (master.get_digital(E_CONTROLLER_DIGITAL_R1) && (millis() - prcsET > 500)) {prcsM = !prcsM; prcsET = millis();}
+		if (master.get_digital(E_CONTROLLER_DIGITAL_R2) && (millis() - prcsET > 500)) {prcsM = !prcsM; prcsET = millis();}
 
 		// Toggle flaps (dont repeat until half a second)
 		if (master.get_digital(E_CONTROLLER_DIGITAL_A) && (millis() - fpET > 500)) {fp.toggle(); fpET = millis();}
@@ -123,7 +125,8 @@ void opcontrol() {
 		dt.teleMove();
 
 		// Automatically move the catapult down unless it's hitting the button, or continue moving down if B is pressed
-		cata.move(-127, !master.get_digital(E_CONTROLLER_DIGITAL_B));
+		//cata.move(-127, !master.get_digital(E_CONTROLLER_DIGITAL_B));
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {cata.move(-127);} else {cata.move(-30);}
 
 		delay(20);
 	}

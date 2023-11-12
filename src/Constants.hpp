@@ -2,14 +2,14 @@
 
 #include <cmath>
 namespace Constants {
-    static constexpr unsigned char fl_p = 1; // Port of Front Left motor
-    static constexpr unsigned char bl_p = 11; // Port of Back Left motor
-    static constexpr unsigned char btl_p = 2; // Port of Top Back Left motor
-    static constexpr unsigned char fr_p = 10; // Port of Front Right motor
-    static constexpr unsigned char br_p = 20; // Port of Back Right motor
-    static constexpr unsigned char btr_p = 9; // Port of Top Back Right motor
+    static constexpr unsigned char fl_p = 19; // Port of Front Left motor
+    static constexpr unsigned char bl_p = 10; // Port of Back Left motor
+    static constexpr unsigned char btl_p = 20; // Port of Top Back Left motor
+    static constexpr unsigned char fr_p = 12; // Port of Front Right motor
+    static constexpr unsigned char br_p = 1; // Port of Back Right motor
+    static constexpr unsigned char btr_p = 11; // Port of Top Back Right motor
 
-    static constexpr unsigned char cata_p = 3; // Port of the Catapult
+    static constexpr unsigned char cata_p = 5; // Port of the Catapult
 
     static constexpr unsigned char flaps_p = 'A'; // Port for the Pneumatic flaps
     static constexpr unsigned char btn_p = 'B'; // Port for the Catapult's button

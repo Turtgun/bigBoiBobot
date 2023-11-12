@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "bigBoibot",
+    "project_name": "597B",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -311,7 +311,7 @@
     "upload_options": {
       "icon": "pros",
       "slot": 2,
-      "description": ""
+      "description": "My PROS Project"
     }
   }
 }

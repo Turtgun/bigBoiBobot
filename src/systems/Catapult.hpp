@@ -13,10 +13,13 @@ class Catapult {
         ADIDigitalIn button = ADIDigitalIn(btn_p);
     public:
         Catapult(){}
-        void move(signed char voltage, bool restricted) {
+        void cataMove(signed char voltage, bool restricted) {
             if (voltage > 0 && restricted && button.get_value()) {
                 cata.move(0);
             return;}
+            cata.move(voltage);
+        }
+        void move(signed char voltage) {
             cata.move(voltage);
         }
 };

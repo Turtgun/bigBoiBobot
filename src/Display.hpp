@@ -21,7 +21,7 @@ namespace Display {
     static inline lv_obj_t* createLabel(lv_obj_t* parent, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title)
     {
         lv_obj_t* label =  lv_label_create(parent, NULL);
-        lv_obj_set_pos(label, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 40);
+        lv_obj_set_pos(label, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 60);
         lv_obj_set_size(label, width, height);
         lv_label_set_text(label, title);
         lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
@@ -33,7 +33,7 @@ namespace Display {
                     lv_color_t rel, lv_color_t tglRel, lv_style_t* copy = &lv_style_plain, lv_color_t textColor = LV_COLOR_WHITE)
     {
         lv_obj_t* btn = lv_btn_create(parent, NULL);
-        lv_obj_set_pos(btn, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 40);
+        lv_obj_set_pos(btn, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 20);
         lv_obj_set_size(btn, width, height);
 
         lv_obj_t* label = lv_label_create(btn, NULL);
