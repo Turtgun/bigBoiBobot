@@ -2,6 +2,8 @@
 
 #include "../include/display/lvgl.h"
 
+#include "display/lv_misc/lv_area.h"
+
 namespace Display {
     enum disp_obj_align {
         DISP_LEFT,
@@ -18,10 +20,10 @@ namespace Display {
         return img;
     }
 
-    static inline lv_obj_t* createLabel(lv_obj_t* parent, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title)
+    static inline lv_obj_t* createLabel(lv_obj_t* parent, lv_coord_t y, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title)
     {
         lv_obj_t* label =  lv_label_create(parent, NULL);
-        lv_obj_set_pos(label, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 60);
+        lv_obj_set_pos(label, (align+1)*50, y);
         lv_obj_set_size(label, width, height);
         lv_label_set_text(label, title);
         lv_label_set_align(label, LV_LABEL_ALIGN_CENTER);
@@ -29,11 +31,11 @@ namespace Display {
         return label;
     }
 
-    static inline lv_obj_t* createBtn(lv_obj_t* parent, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title, 
+    static inline lv_obj_t* createBtn(lv_obj_t* parent, lv_coord_t y, disp_obj_align align, lv_coord_t width, lv_coord_t height, const char* title, 
                     lv_color_t rel, lv_color_t tglRel, lv_style_t* copy = &lv_style_plain, lv_color_t textColor = LV_COLOR_WHITE)
     {
         lv_obj_t* btn = lv_btn_create(parent, NULL);
-        lv_obj_set_pos(btn, (align+1)*50, lv_obj_get_y(lv_obj_get_child(parent, NULL)) + 20);
+        lv_obj_set_pos(btn, (align+1)*50, y);
         lv_obj_set_size(btn, width, height);
 
         lv_obj_t* label = lv_label_create(btn, NULL);
@@ -70,6 +72,7 @@ namespace Display {
 
         return btn;
     }
+    
     static inline void btnSetToggled(lv_obj_t* btn, bool toggled)
     {
         if(toggled != (lv_btn_get_state(btn) >= 2)) lv_btn_toggle(btn);

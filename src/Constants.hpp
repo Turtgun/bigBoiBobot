@@ -3,20 +3,24 @@
 #include <cmath>
 namespace Constants {
     static constexpr unsigned char fl_p = 19; // Port of Front Left motor
+    static constexpr unsigned char ml_p = 20; // Port of Middle Left motor
     static constexpr unsigned char bl_p = 10; // Port of Back Left motor
-    static constexpr unsigned char btl_p = 20; // Port of Top Back Left motor
     static constexpr unsigned char fr_p = 12; // Port of Front Right motor
+    static constexpr unsigned char mr_p = 11; // Port of Middle Right motor
     static constexpr unsigned char br_p = 1; // Port of Back Right motor
-    static constexpr unsigned char btr_p = 11; // Port of Top Back Right motor
 
-    static constexpr unsigned char cata_p = 5; // Port of the Catapult
+    static constexpr unsigned char cata_p = 15; // Port of the Catapult
 
-    static constexpr unsigned char flaps_p = 'A'; // Port for the Pneumatic flaps
-    static constexpr unsigned char btn_p = 'B'; // Port for the Catapult's button
+    static constexpr unsigned char ele_p = 8; // Port of the Elevation mech
+
+    static constexpr unsigned char flapsL_p = 'A'; // Port for the Left Pneumatic flaps
+    static constexpr unsigned char flapsR_p = 'B'; // Port for the Right Pneumatic flaps
+
+    static constexpr unsigned char btn_p = 'C'; // Port for the Catapult's button
 
     static constexpr unsigned char threshold = 11; // Threshhold for controller to start moving the robot
     
-    static constexpr float trackwidth = 4.8f; // The distance between both the left and an right motors
+    static constexpr float trackwidth = 4.6f; // The distance between both the left and an right motors
 
     static const double pi = 3.14159265358979323846; // pi
     static const double radToDeg = 180/pi;

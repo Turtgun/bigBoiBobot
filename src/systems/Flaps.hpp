@@ -8,9 +8,13 @@ using namespace Constants;
 
 class Flaps {
     private:
-        ADIDigitalOut flaps = ADIDigitalOut(flaps_p, false);
-        bool state = false;
+        ADIDigitalOut fpL = ADIDigitalOut(flapsL_p, false);
+        ADIDigitalOut fpR = ADIDigitalOut(flapsR_p, false);
+
+        bool stateL = false;
+        bool stateR = false;
     public:
         Flaps(){}
-        void toggle(){state=!state; flaps.set_value(state);}
+        void toggleL(){stateL=!stateL; fpL.set_value(stateL);}
+        void toggleR(){stateR=!stateR; fpR.set_value(stateR);}
 };
