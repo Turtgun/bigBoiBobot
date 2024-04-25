@@ -236,10 +236,12 @@ void opcontrol() {
 
 		// Automatically move the catapult down unless it's hitting the button, or continue moving down if B is pressed
 		//cata.move(-127, !master.get_digital(E_CONTROLLER_DIGITAL_B));
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {cata.move(-127);} else {cata.move(0);}
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {cata.move(-127);} 
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {cata.move(127);}
+		else {cata.move(0);}
 		
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {ele.move(-127);}
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {ele.move(127);}
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {ele.move(-127);}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {ele.move(127);}
 		else {ele.move(0);}
 
 		delay(20);
